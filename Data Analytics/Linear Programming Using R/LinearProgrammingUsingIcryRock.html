@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head></head><body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid main-container">
+
+
+
+
+
+
+
+
+
+
+
+<div class="fluid-row">
+
+
+
+<h1 class="title toc-ignore">Linear Programming in R</h1>
+<h4 class="author"><em>Etana Disasa</em></h4>
+<h4 class="date"><em>12/17/2018</em></h4>
+
+</div>
+
+
+<div class="section level2">
+<h2>Assignment Question from <a rel="noopener" href="https://icyrock.com/blog/2013/12/linear-programming-in-r-using-lpsolve/">icyrock.com</a> website</h2>
+<div class="section level3">
+<h3>Problem</h3>
+<div class="section level5">
+<h5>Suppose a farmer has 75 acres on which to plant two crops: wheat and barley. To produce these crops, it costs the farmer (for seed, fertilizer, etc.) $120 per acre for the wheat and $210 per acre for the barley. The farmer has $15000 available for expenses. But after the harvest, the farmer must store the crops while awaiting favourable market conditions. The farmer has storage space for 4000 bushels. Each acre yields an average of 110 bushels of wheat or 30 bushels of barley. If the net profit per bushel of wheat (after all expenses have been subtracted) is $1.30 and for barley is $2.00, how should the farmer plant the 75 acres to maximize profit?</h5>
+</div>
+</div>
+<div class="section level3">
+<h3>Solution</h3>
+<pre class="r"><code>library(lpSolveAPI)
+lprec &lt;- make.lp(0,2)
+lp.control(lprec, sense=&quot;max&quot;)</code></pre>
+<pre><code>## $anti.degen
+## [1] &quot;fixedvars&quot; &quot;stalling&quot; 
+## 
+## $basis.crash
+## [1] &quot;none&quot;
+## 
+## $bb.depthlimit
+## [1] -50
+## 
+## $bb.floorfirst
+## [1] &quot;automatic&quot;
+## 
+## $bb.rule
+## [1] &quot;pseudononint&quot; &quot;greedy&quot;       &quot;dynamic&quot;      &quot;rcostfixing&quot; 
+## 
+## $break.at.first
+## [1] FALSE
+## 
+## $break.at.value
+## [1] 1e+30
+## 
+## $epsilon
+##       epsb       epsd      epsel     epsint epsperturb   epspivot 
+##      1e-10      1e-09      1e-12      1e-07      1e-05      2e-07 
+## 
+## $improve
+## [1] &quot;dualfeas&quot; &quot;thetagap&quot;
+## 
+## $infinite
+## [1] 1e+30
+## 
+## $maxpivot
+## [1] 250
+## 
+## $mip.gap
+## absolute relative 
+##    1e-11    1e-11 
+## 
+## $negrange
+## [1] -1e+06
+## 
+## $obj.in.basis
+## [1] TRUE
+## 
+## $pivoting
+## [1] &quot;devex&quot;    &quot;adaptive&quot;
+## 
+## $presolve
+## [1] &quot;none&quot;
+## 
+## $scalelimit
+## [1] 5
+## 
+## $scaling
+## [1] &quot;geometric&quot;   &quot;equilibrate&quot; &quot;integers&quot;   
+## 
+## $sense
+## [1] &quot;maximize&quot;
+## 
+## $simplextype
+## [1] &quot;dual&quot;   &quot;primal&quot;
+## 
+## $timeout
+## [1] 0
+## 
+## $verbose
+## [1] &quot;neutral&quot;</code></pre>
+<div class="section level4">
+<h4>Here, consider x denotes wheat and y deontes barley. Then,</h4>
+<div class="section level5">
+<h5>1. 120x + 210y &lt;= 15000 | Total expense in USD</h5>
+</div>
+<div class="section level5">
+<h5>2. 110x + 30y &lt;= 4000 | Max storage in bushels</h5>
+</div>
+<div class="section level5">
+<h5>3. x+y &lt;= 75 | Max size of farm in acres</h5>
+</div>
+<div class="section level5">
+<h5>4. 1.3(average yield of x) + 2(average yield of y) = g</h5>
+</div>
+<div class="section level5">
+<h5>—1.3(110x) + 2(30y) = g, or</h5>
+</div>
+<div class="section level5">
+<h5>—143x + 60y = g will beht optimiation function. Thus, it will be described as follows.</h5>
+<pre class="r"><code>set.objfn(lprec, c(1.3*110, 2*30))
+add.constraint(lprec, c(120, 210), &quot;&lt;=&quot;, 15000)
+add.constraint(lprec, c(110, 30), &quot;&lt;=&quot;, 4000)
+add.constraint(lprec, c(1, 1), &quot;&lt;=&quot;, 75)
+lprec</code></pre>
+<pre><code>## Model name: 
+##             C1    C2           
+## Maximize   143    60           
+## R1         120   210  &lt;=  15000
+## R2         110    30  &lt;=   4000
+## R3           1     1  &lt;=     75
+## Kind       Std   Std           
+## Type      Real  Real           
+## Upper      Inf   Inf           
+## Lower        0     0</code></pre>
+<pre class="r"><code>solve(lprec)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>get.objective(lprec)</code></pre>
+<pre><code>## [1] 6315.625</code></pre>
+<pre class="r"><code>get.variables(lprec)</code></pre>
+<pre><code>## [1] 21.875 53.125</code></pre>
+</div>
+<div class="section level5">
+<h5>The answer is, if the farmer plants (21.875, 53.125) acres of Weath and barley respectively, then he/she will make a total of $6315.625 in profit.</h5>
+</div>
+</div>
+<div class="section level4">
+<h4>Resources I used</h4>
+<div class="section level5">
+<h5>“Markdown Cheatsheet”&quot; by <a rel="noopener" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">github.com</a></h5>
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="/d2l/common/math/MathML.js?v=20.22.3.35896 "></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() { D2LMathML.DesktopInit('https://s.brightspace.com/lib/mathjax/2.7.4/MathJax.js?config=MML_HTMLorMML','https://s.brightspace.com/lib/mathjax/2.7.4/MathJax.js?config=TeX-AMS-MML_HTMLorMML','130',false); });</script></body></html>

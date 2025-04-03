@@ -1,0 +1,44 @@
+---
+title: "Linear Programming in R"
+author: "Etana Disasa"
+date: "12/17/2018"
+output: html_document
+---
+## Assignment Question from [icyrock.com](https://icyrock.com/blog/2013/12/linear-programming-in-r-using-lpsolve/) website
+### Problem
+#####Suppose a farmer has 75 acres on which to plant two crops: wheat and barley. To produce these crops, it costs the farmer (for seed, fertilizer, etc.) $120 per acre for the wheat and $210 per acre for the barley. The farmer has $15000 available for expenses. But after the harvest, the farmer must store the crops while awaiting favourable market conditions. The farmer has storage space for 4000 bushels. Each acre yields an average of 110 bushels of wheat or 30 bushels of barley. If the net profit per bushel of wheat (after all expenses have been subtracted) is $1.30 and for barley is $2.00, how should the farmer plant the 75 acres to maximize profit?
+### Solution
+```{r}
+library(lpSolveAPI)
+lprec <- make.lp(0,2)
+lp.control(lprec, sense="max")
+```
+#### Here, consider x denotes wheat and y deontes barley. Then, 
+#####1. 120x + 210y <= 15000 | Total expense in USD
+#####2. 110x + 30y <= 4000 | Max storage in bushels
+#####3. x+y <= 75 | Max size of farm in acres
+#####4. 1.3(average yield of x) + 2(average yield of y) = g
+#####---1.3(110x) + 2(30y) = g, or
+#####---143x + 60y = g will beht optimiation function. Thus, it will be described as follows.
+```{r}
+set.objfn(lprec, c(1.3*110, 2*30))
+add.constraint(lprec, c(120, 210), "<=", 15000)
+add.constraint(lprec, c(110, 30), "<=", 4000)
+add.constraint(lprec, c(1, 1), "<=", 75)
+lprec
+```
+
+```{r}
+solve(lprec)
+```
+
+```{r}
+get.objective(lprec)
+```
+
+```{r}
+get.variables(lprec)
+```
+#####The answer is, if the farmer plants (`r get.variables(lprec)`) acres of Weath and barley respectively, then he/she will make a total of $`r get.objective(lprec)` in profit. 
+####Resources I used
+#####"Markdown Cheatsheet"" by [github.com](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)

@@ -1,0 +1,580 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head></head><body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid main-container">
+
+
+
+
+
+
+
+
+
+
+
+<div class="fluid-row">
+
+
+
+<h1 class="title toc-ignore">Supervised Learning</h1>
+<h4 class="author"><em>Etana Disasa</em></h4>
+<h4 class="date"><em>12/13/2018</em></h4>
+
+</div>
+
+
+<div class="section level2">
+<h2>Assignment Questions</h2>
+<div class="section level5">
+<h5>Question 1. How do supervised learning algorithms solve regression and classification problems? (I am not wanting a description of the internal workings of the algorithms.)</h5>
+</div>
+<div class="section level5">
+<h5>Answer 1. Supervised learning algorithms solve regression problems by training from a dataset and execute numeric prediction. Classification problems are solved similarily but the prediction output is a categorical and descerete outcome.</h5>
+</div>
+<div class="section level5">
+<h5>Question 2. What packages (in R, Python…) perform supervised learning?</h5>
+</div>
+<div class="section level5">
+<h5>Answer 2. R [mice, rpart, party, caret, randomForest], Python[Scikit, Tensorflow, Theano]</h5>
+</div>
+<div class="section level5">
+<h5>Question 3. What measures of quality of the learning algorithm might you expect to see?</h5>
+</div>
+<div class="section level5">
+<h5>Answer 3. Primarily, a quality learning algorithm will pridict an output value that is closely similar or identical to the test dataset.</h5>
+</div>
+</div>
+<div class="section level2">
+<h2>Loading and Exploring the Dataset</h2>
+<div class="section level5">
+<h5>Libraries called and keep hidden to avoid unnecessary details from displaying.</h5>
+</div>
+<div class="section level3">
+<h3>Loading Dataset</h3>
+<pre class="r"><code>data(&quot;iris&quot;)
+summary(iris)</code></pre>
+<pre><code>##   Sepal.Length    Sepal.Width     Petal.Length    Petal.Width   
+##  Min.   :4.300   Min.   :2.000   Min.   :1.000   Min.   :0.100  
+##  1st Qu.:5.100   1st Qu.:2.800   1st Qu.:1.600   1st Qu.:0.300  
+##  Median :5.800   Median :3.000   Median :4.350   Median :1.300  
+##  Mean   :5.843   Mean   :3.057   Mean   :3.758   Mean   :1.199  
+##  3rd Qu.:6.400   3rd Qu.:3.300   3rd Qu.:5.100   3rd Qu.:1.800  
+##  Max.   :7.900   Max.   :4.400   Max.   :6.900   Max.   :2.500  
+##        Species  
+##  setosa    :50  
+##  versicolor:50  
+##  virginica :50  
+##                 
+##                 
+## </code></pre>
+</div>
+<div class="section level3">
+<h3>Exploring Data Set</h3>
+<pre class="r"><code>summary(iris[c(&quot;Petal.Width&quot;,&quot;Sepal.Width&quot;)])</code></pre>
+<pre><code>##   Petal.Width     Sepal.Width   
+##  Min.   :0.100   Min.   :2.000  
+##  1st Qu.:0.300   1st Qu.:2.800  
+##  Median :1.300   Median :3.000  
+##  Mean   :1.199   Mean   :3.057  
+##  3rd Qu.:1.800   3rd Qu.:3.300  
+##  Max.   :2.500   Max.   :4.400</code></pre>
+<pre class="r"><code>summary(iris[c(&quot;Petal.Length&quot;,&quot;Sepal.Length&quot;)])</code></pre>
+<pre><code>##   Petal.Length    Sepal.Length  
+##  Min.   :1.000   Min.   :4.300  
+##  1st Qu.:1.600   1st Qu.:5.100  
+##  Median :4.350   Median :5.800  
+##  Mean   :3.758   Mean   :5.843  
+##  3rd Qu.:5.100   3rd Qu.:6.400  
+##  Max.   :6.900   Max.   :7.900</code></pre>
+</div>
+</div>
+<div class="section level2">
+<h2>Scatter Plots of the Dataset</h2>
+<div class="section level3">
+<h3>Plot 1: Sepal Width and Sepal Length</h3>
+<pre class="r"><code>iris %&gt;% ggvis(~Sepal.Length,~Sepal.Width,fill=~Species) %&gt;% layer_points()</code></pre>
+<div class="ggvis-output-container">
+<div class="ggvis-output"></div>
+<div class="plot-gear-icon">
+<nav class="ggvis-control">
+<a rel="noopener" class="ggvis-dropdown-toggle" title="Controls"></a>
+<ul class="ggvis-dropdown">
+<li>
+Renderer: 
+<a rel="noopener" class="ggvis-renderer-button">SVG</a>
+ | 
+<a rel="noopener" class="ggvis-renderer-button">Canvas</a>
+</li>
+<li>
+<a rel="noopener" class="ggvis-download">Download</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+
+</div>
+<div class="section level3">
+<h3>Plot 2: Petal Width and Petal Length</h3>
+<pre class="r"><code>iris %&gt;% ggvis(~Petal.Length,~Petal.Width, fill=~Species) %&gt;% layer_points() </code></pre>
+<div class="ggvis-output-container">
+<div class="ggvis-output"></div>
+<div class="plot-gear-icon">
+<nav class="ggvis-control">
+<a rel="noopener" class="ggvis-dropdown-toggle" title="Controls"></a>
+<ul class="ggvis-dropdown">
+<li>
+Renderer: 
+<a rel="noopener" class="ggvis-renderer-button">SVG</a>
+ | 
+<a rel="noopener" class="ggvis-renderer-button">Canvas</a>
+</li>
+<li>
+<a rel="noopener" class="ggvis-download">Download</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+
+<div class="section level5">
+<h5>Question: What does this show you? Is there positive or negative correlation between sepal length and width? The same way, in Plot 2, there positive or negative correlation between petal length and width?</h5>
+</div>
+<div class="section level5">
+<h5>Answer: In Plot 1, the is a clearer positive correlation between Sepal Width and Sepal Length in the Sesota species. Even though, the correlation is not very outstanding, the same positive correlation may be seen in the Versicolor and Virginica spcies. In Plot 2, as the size of a Petal Lengh increases, there is an increase of Petal Width which is positive correlation. Thus, both plots display positive correlation.</h5>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2>Training Dataset with 80/20%</h2>
+<div class="section level3">
+<h3>Preparing Data</h3>
+<pre class="r"><code>set.seed(3465)
+ind &lt;- sample(2,nrow(iris), replace=TRUE, prob =c(80,20))
+irisTrain &lt;- iris[ind==1, 1:4]
+irisTest &lt;- iris[ind==2, 1:4]
+irisTrainLabels &lt;- iris[ind==1, 5]
+irisTestLabels &lt;- iris[ind==2, 5]</code></pre>
+</div>
+<div class="section level3">
+<h3>Find the k-Nearest Neighbors of the Training Set</h3>
+<pre class="r"><code>iris_pred &lt;- knn(train = irisTrain, test = irisTest, cl = irisTrainLabels, k=3)
+iris_pred</code></pre>
+<pre><code>##  [1] setosa     setosa     setosa     setosa     setosa     setosa    
+##  [7] setosa     setosa     versicolor versicolor versicolor versicolor
+## [13] versicolor versicolor versicolor versicolor virginica  virginica 
+## [19] virginica  virginica 
+## Levels: setosa versicolor virginica</code></pre>
+</div>
+<div class="section level3">
+<h3>Displaying Results</h3>
+<pre class="r"><code>CrossTable(x = irisTestLabels, y = iris_pred, prop.chisq = FALSE)</code></pre>
+<pre><code>##    Cell Contents 
+## |-------------------------|
+## |                       N | 
+## |           N / Row Total | 
+## |           N / Col Total | 
+## |         N / Table Total | 
+## |-------------------------|
+## 
+## =========================================================
+##                   iris_pred
+## irisTestLabels    setosa   versicolor   virginica   Total
+## ---------------------------------------------------------
+## setosa                 8            0           0       8
+##                      1.0          0.0         0.0     0.4
+##                        1            0           0        
+##                      0.4          0.0         0.0        
+## ---------------------------------------------------------
+## versicolor             0            8           0       8
+##                      0.0          1.0         0.0     0.4
+##                        0            1           0        
+##                      0.0          0.4         0.0        
+## ---------------------------------------------------------
+## virginica              0            0           4       4
+##                      0.0          0.0         1.0     0.2
+##                        0            0           1        
+##                      0.0          0.0         0.2        
+## ---------------------------------------------------------
+## Total                  8            8           4      20
+##                      0.4          0.4         0.2        
+## =========================================================</code></pre>
+</div>
+<div class="section level3">
+<h3>Testing the Prediction</h3>
+<pre class="r"><code># Put `irisTestLabels` in a data frame
+irisTestLabels &lt;- data.frame(irisTestLabels)
+# Merge `iris_pred` and `iris.testLabels` 
+merge &lt;- data.frame(iris_pred, irisTestLabels)
+# Specify column names for `merge`
+names(merge) &lt;- c(&quot;Predicted Species&quot;, &quot;Observed Species&quot;)
+# Inspect `merge` 
+merge</code></pre>
+<pre><code>##    Predicted Species Observed Species
+## 1             setosa           setosa
+## 2             setosa           setosa
+## 3             setosa           setosa
+## 4             setosa           setosa
+## 5             setosa           setosa
+## 6             setosa           setosa
+## 7             setosa           setosa
+## 8             setosa           setosa
+## 9         versicolor       versicolor
+## 10        versicolor       versicolor
+## 11        versicolor       versicolor
+## 12        versicolor       versicolor
+## 13        versicolor       versicolor
+## 14        versicolor       versicolor
+## 15        versicolor       versicolor
+## 16        versicolor       versicolor
+## 17         virginica        virginica
+## 18         virginica        virginica
+## 19         virginica        virginica
+## 20         virginica        virginica</code></pre>
+<div class="section level4">
+<h4>It appears that the prediction returned identical results with the species observed in all 20 predictions.</h4>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2>When the Training Test ratio is 67/33%</h2>
+<div class="section level3">
+<h3>Training Data</h3>
+<pre class="r"><code>set.seed(3465) ##The exercise leaves setting the seed. Unless set here, the outcomes differ. 
+ind &lt;- sample(2, nrow(iris), replace=TRUE, prob=c(0.67,0.33))
+irisTrain &lt;- iris[ind==1,1:4]
+irisTest &lt;- iris[ind==2,1:4]
+irisTrainLabels &lt;- iris[ind==1,5]
+irisTestLabels &lt;- iris[ind==2,5]
+iris_pred &lt;- knn(train = irisTrain, test=irisTest, cl = irisTrainLabels, k=3)
+iris_pred</code></pre>
+<pre><code>##  [1] setosa     setosa     setosa     setosa     setosa     setosa    
+##  [7] setosa     setosa     setosa     setosa     setosa     setosa    
+## [13] setosa     setosa     setosa     versicolor versicolor versicolor
+## [19] versicolor versicolor versicolor versicolor virginica  versicolor
+## [25] virginica  versicolor versicolor versicolor versicolor versicolor
+## [31] versicolor virginica  virginica  virginica  virginica  virginica 
+## [37] virginica  virginica  virginica  virginica  virginica  virginica 
+## [43] virginica  virginica 
+## Levels: setosa versicolor virginica</code></pre>
+</div>
+<div class="section level3">
+<h3>Plot Results</h3>
+<pre class="r"><code>display &lt;- CrossTable(x = irisTestLabels, y = iris_pred, prop.chisq = FALSE)
+pander(display, digits=1)</code></pre>
+<table style="width:96%;">
+<colgroup>
+<col width="26%"/>
+<col width="18%"/>
+<col width="18%"/>
+<col width="16%"/>
+<col width="16%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">&#160;<br/>
+irisTestLabels</th>
+<th align="center">iris_pred<br/>
+setosa</th>
+<th align="center">&#160;<br/>
+versicolor</th>
+<th align="center">&#160;<br/>
+virginica</th>
+<th align="center">&#160;<br/>
+Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><strong>setosa</strong><br/>
+N<br/>
+Row(%)<br/>
+Column(%)<br/>
+Total(%)</td>
+<td align="center">&#160;<br/>
+15<br/>
+100.0%<br/>
+100.0%<br/>
+34.1%</td>
+<td align="center">&#160;<br/>
+0<br/>
+0.0%<br/>
+0.0%<br/>
+0.0%</td>
+<td align="center">&#160;<br/>
+0<br/>
+0.0%<br/>
+0.0%<br/>
+0.0%</td>
+<td align="center">&#160;<br/>
+15<br/>
+34.1%<br/>
+<br/>
+</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>versicolor</strong><br/>
+N<br/>
+Row(%)<br/>
+Column(%)<br/>
+Total(%)</td>
+<td align="center">&#160;<br/>
+0<br/>
+0.0%<br/>
+0.0%<br/>
+0.0%</td>
+<td align="center">&#160;<br/>
+14<br/>
+87.5%<br/>
+100.0%<br/>
+31.8%</td>
+<td align="center">&#160;<br/>
+2<br/>
+12.5%<br/>
+13.3%<br/>
+4.5%</td>
+<td align="center">&#160;<br/>
+16<br/>
+36.4%<br/>
+<br/>
+</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong>virginica</strong><br/>
+N<br/>
+Row(%)<br/>
+Column(%)<br/>
+Total(%)</td>
+<td align="center">&#160;<br/>
+0<br/>
+0.0%<br/>
+0.0%<br/>
+0.0%</td>
+<td align="center">&#160;<br/>
+0<br/>
+0.0%<br/>
+0.0%<br/>
+0.0%</td>
+<td align="center">&#160;<br/>
+13<br/>
+100.0%<br/>
+86.7%<br/>
+29.5%</td>
+<td align="center">&#160;<br/>
+13<br/>
+29.5%<br/>
+<br/>
+</td>
+</tr>
+<tr class="even">
+<td align="center">Total<br/>
+</td>
+<td align="center">15<br/>
+34.1%</td>
+<td align="center">14<br/>
+31.8%</td>
+<td align="center">15<br/>
+34.1%</td>
+<td align="center">44<br/>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3>Testing the Prediction</h3>
+<pre class="r"><code># Put `irisTestLabels` in a data frame
+irisTestLabels &lt;- data.frame(irisTestLabels)
+# Merge `iris_pred` and `iris.testLabels` 
+merge &lt;- data.frame(iris_pred, irisTestLabels)
+# Specify column names for `merge`
+names(merge) &lt;- c(&quot;Predicted Species&quot;, &quot;Observed Species&quot;)
+# Inspect `merge` 
+merge</code></pre>
+<pre><code>##    Predicted Species Observed Species
+## 1             setosa           setosa
+## 2             setosa           setosa
+## 3             setosa           setosa
+## 4             setosa           setosa
+## 5             setosa           setosa
+## 6             setosa           setosa
+## 7             setosa           setosa
+## 8             setosa           setosa
+## 9             setosa           setosa
+## 10            setosa           setosa
+## 11            setosa           setosa
+## 12            setosa           setosa
+## 13            setosa           setosa
+## 14            setosa           setosa
+## 15            setosa           setosa
+## 16        versicolor       versicolor
+## 17        versicolor       versicolor
+## 18        versicolor       versicolor
+## 19        versicolor       versicolor
+## 20        versicolor       versicolor
+## 21        versicolor       versicolor
+## 22        versicolor       versicolor
+## 23         virginica       versicolor
+## 24        versicolor       versicolor
+## 25         virginica       versicolor
+## 26        versicolor       versicolor
+## 27        versicolor       versicolor
+## 28        versicolor       versicolor
+## 29        versicolor       versicolor
+## 30        versicolor       versicolor
+## 31        versicolor       versicolor
+## 32         virginica        virginica
+## 33         virginica        virginica
+## 34         virginica        virginica
+## 35         virginica        virginica
+## 36         virginica        virginica
+## 37         virginica        virginica
+## 38         virginica        virginica
+## 39         virginica        virginica
+## 40         virginica        virginica
+## 41         virginica        virginica
+## 42         virginica        virginica
+## 43         virginica        virginica
+## 44         virginica        virginica</code></pre>
+<div class="section level4">
+<h4>Here two wrong predictions were observed on rows 23rd and 25th by producing Virginica instead of Versicolor.</h4>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2>Other Important Techniques I Exercised</h2>
+<div class="section level3">
+<h3>Creating Test and Training Datasets using ‘createDataPartition’ from ‘caret’ package</h3>
+<pre class="r"><code>set.seed(3465)
+trainIndex &lt;- createDataPartition(iris$Species, p=.8, list = FALSE, times = 1)
+head(trainIndex)</code></pre>
+<pre><code>##      Resample1
+## [1,]         1
+## [2,]         2
+## [3,]         3
+## [4,]         4
+## [5,]         5
+## [6,]         7</code></pre>
+<pre class="r"><code>irisTrain &lt;-iris[trainIndex]
+head(irisTrain)</code></pre>
+<pre><code>## [1] &quot;5.1&quot; &quot;4.9&quot; &quot;4.7&quot; &quot;4.6&quot; &quot;5.0&quot; &quot;4.6&quot;</code></pre>
+<pre class="r"><code>irisTest &lt;- iris[-trainIndex]
+head(irisTest)</code></pre>
+<pre><code>## [1] &quot;5.4&quot; &quot;5.4&quot; &quot;5.8&quot; &quot;5.7&quot; &quot;5.1&quot; &quot;4.9&quot;</code></pre>
+</div>
+<div class="section level3">
+<h3>Normalize Dataset</h3>
+<div class="section level4">
+<h4>The purpose of normilizing is to gize the KNN tool to better predict information.</h4>
+<pre class="r"><code>normalize &lt;- function(x) {
+num &lt;- x - min(x)
+denom &lt;- max(x) - min(x)
+return (num/denom)
+}
+iris_x &lt;- as.data.frame(lapply(iris[1:4], normalize))
+summary(iris)</code></pre>
+<pre><code>##   Sepal.Length    Sepal.Width     Petal.Length    Petal.Width   
+##  Min.   :4.300   Min.   :2.000   Min.   :1.000   Min.   :0.100  
+##  1st Qu.:5.100   1st Qu.:2.800   1st Qu.:1.600   1st Qu.:0.300  
+##  Median :5.800   Median :3.000   Median :4.350   Median :1.300  
+##  Mean   :5.843   Mean   :3.057   Mean   :3.758   Mean   :1.199  
+##  3rd Qu.:6.400   3rd Qu.:3.300   3rd Qu.:5.100   3rd Qu.:1.800  
+##  Max.   :7.900   Max.   :4.400   Max.   :6.900   Max.   :2.500  
+##        Species  
+##  setosa    :50  
+##  versicolor:50  
+##  virginica :50  
+##                 
+##                 
+## </code></pre>
+<pre class="r"><code>summary(iris_x)</code></pre>
+<pre><code>##   Sepal.Length     Sepal.Width      Petal.Length     Petal.Width     
+##  Min.   :0.0000   Min.   :0.0000   Min.   :0.0000   Min.   :0.00000  
+##  1st Qu.:0.2222   1st Qu.:0.3333   1st Qu.:0.1017   1st Qu.:0.08333  
+##  Median :0.4167   Median :0.4167   Median :0.5678   Median :0.50000  
+##  Mean   :0.4287   Mean   :0.4406   Mean   :0.4675   Mean   :0.45806  
+##  3rd Qu.:0.5833   3rd Qu.:0.5417   3rd Qu.:0.6949   3rd Qu.:0.70833  
+##  Max.   :1.0000   Max.   :1.0000   Max.   :1.0000   Max.   :1.00000</code></pre>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2>Resources/References Utilized</h2>
+<div class="section level5">
+<h5><a rel="noopener" href="https://www.datacamp.com/community/tutorials/machine-learning-in-r" class="uri">https://www.datacamp.com/community/tutorials/machine-learning-in-r</a></h5>
+</div>
+<div class="section level5">
+<h5><a rel="noopener" href="https://stats.stackexchange.com/questions/86285/random-number-set-seedn-in-r" class="uri">https://stats.stackexchange.com/questions/86285/random-number-set-seedn-in-r</a></h5>
+</div>
+<div class="section level5">
+<h5><a rel="noopener" href="https://www.geeksforgeeks.org/regression-classification-supervised-machine-learning/" class="uri">https://www.geeksforgeeks.org/regression-classification-supervised-machine-learning/</a></h5>
+</div>
+<div class="section level5">
+<h5><a rel="noopener" href="https://medium.freecodecamp.org/essential-libraries-for-machine-learning-in-python-82a9ada57aeb" class="uri">https://medium.freecodecamp.org/essential-libraries-for-machine-learning-in-python-82a9ada57aeb</a></h5>
+</div>
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="/d2l/common/math/MathML.js?v=20.22.3.35896 "></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() { D2LMathML.DesktopInit('https://s.brightspace.com/lib/mathjax/2.7.4/MathJax.js?config=MML_HTMLorMML','https://s.brightspace.com/lib/mathjax/2.7.4/MathJax.js?config=TeX-AMS-MML_HTMLorMML','130',false); });</script></body></html>

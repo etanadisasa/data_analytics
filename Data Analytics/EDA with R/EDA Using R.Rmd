@@ -1,0 +1,81 @@
+---
+title: 'ASSIGNMENT TWO: EDA'
+author: "Etana Disasa"
+date: "11/8/2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+
+library(ggplot2)
+library(data.table)
+library(e1071)
+library(stringr)
+library(dplyr)
+library(ggpubr)
+```
+
+## Factorial Design
+
+This approach takes more than factors to consider to do the experiment. 
+```{r}
+df3 = read.csv("fastfood-3.csv") 
+r = c(t(as.matrix(df3))) # response data 
+f1 = c("Item1", "Item2", "Item3") # 1st factor levels 
+f2 = c("East", "West")            # 2nd factor levels 
+k1 = length(f1)          # number of 1st factors 
+k2 = length(f2)          # number of 2nd factors 
+n = 4  
+tm1 = gl(k1, 1, n*k1*k2, factor(f1))
+tm1
+tm2 = gl(k2, n*k1, n*k1*k2, factor(f2)) 
+tm2
+
+av = aov(r ~ tm1 * tm2) 
+summary(av) 
+```
+
+## Randomized Block Design
+Here, this design only takes one primary factor to consider for the experimant. Each variable is tested against all treatments. 
+```{r}
+df2 = read.table("fastfood-2.txt", header=TRUE); df2 
+r = c(t(as.matrix(df2))) # response data 
+r 
+f = c("Item1", "Item2", "Item3")   # treatment levels 
+k = 3                    # number of treatment levels 
+n = 6                    # number of control blocks
+
+
+tm = gl(k, 1, n*k, factor(f))   # matching treatment 
+tm 
+
+blk = gl(n, k, k*n)             # blocking factor 
+blk 
+
+av = aov(r ~ tm + blk)
+
+summary(av) 
+
+```
+
+## Completely Randomaized Design
+Similarly, there is only one primary factor to consider; however, the test subjects are assigned to treament levels of the primary factor at random. 
+```{r}
+df1 = read.table("fastfood-1.txt", header=TRUE); df1 
+
+
+r = c(t(as.matrix(df1))) # response data 
+r 
+
+f = c("Item1", "Item2", "Item3")   # treatment levels 
+k = 3                    # number of treatment levels 
+n = 6                    # observations per treatment
+
+tm = gl(k, 1, n*k, factor(f))   # matching treatments 
+tm 
+
+av = aov(r ~ tm)
+
+summary(av) 
+```
+

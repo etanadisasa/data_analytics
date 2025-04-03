@@ -1,0 +1,665 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head></head><body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid main-container">
+
+
+
+
+
+
+
+
+
+
+
+<div class="fluid-row">
+
+
+
+<h1 class="title toc-ignore">Supervised Learning</h1>
+<h4 class="author"><em>Etana Disasa</em></h4>
+<h4 class="date"><em>12/13/2018</em></h4>
+
+</div>
+
+
+<div class="section level2">
+<h2>Loading and Exploring the Dataset</h2>
+<div class="section level5">
+<h5>I was able to call libraries keep it hidden to avoid unnecessary details from displaying.</h5>
+</div>
+<div class="section level3">
+<h3>Loading Dataset</h3>
+<pre class="r"><code>haberman &lt;- read.csv(&quot;haberman.data.csv&quot;, header=FALSE)
+setnames(haberman, old=c(&quot;V1&quot;,&quot;V2&quot;,&quot;V3&quot;,&quot;V4&quot;), new=c(&quot;Age&quot;,&quot;Year&quot;,&quot;PositiveNodes&quot;,&quot;Status&quot;))
+haberman$Status[haberman$Status == 1] &lt;- &quot;Survived&quot;
+haberman$Status[haberman$Status == 2] &lt;- &quot;Deseased&quot;
+haberman$Status &lt;- as.factor(haberman$Status)
+
+summary(haberman)</code></pre>
+<pre><code>##       Age             Year       PositiveNodes         Status   
+##  Min.   :30.00   Min.   :58.00   Min.   : 0.000   Deseased: 81  
+##  1st Qu.:44.00   1st Qu.:60.00   1st Qu.: 0.000   Survived:225  
+##  Median :52.00   Median :63.00   Median : 1.000                 
+##  Mean   :52.46   Mean   :62.85   Mean   : 4.026                 
+##  3rd Qu.:60.75   3rd Qu.:65.75   3rd Qu.: 4.000                 
+##  Max.   :83.00   Max.   :69.00   Max.   :52.000</code></pre>
+</div>
+<div class="section level3">
+<h3>Exploring Data Set</h3>
+<pre class="r"><code>summary(haberman[c(&quot;Age&quot;,&quot;Year&quot;)])</code></pre>
+<pre><code>##       Age             Year      
+##  Min.   :30.00   Min.   :58.00  
+##  1st Qu.:44.00   1st Qu.:60.00  
+##  Median :52.00   Median :63.00  
+##  Mean   :52.46   Mean   :62.85  
+##  3rd Qu.:60.75   3rd Qu.:65.75  
+##  Max.   :83.00   Max.   :69.00</code></pre>
+<pre class="r"><code>summary(haberman[c(&quot;Age&quot;,&quot;PositiveNodes&quot;)])</code></pre>
+<pre><code>##       Age        PositiveNodes   
+##  Min.   :30.00   Min.   : 0.000  
+##  1st Qu.:44.00   1st Qu.: 0.000  
+##  Median :52.00   Median : 1.000  
+##  Mean   :52.46   Mean   : 4.026  
+##  3rd Qu.:60.75   3rd Qu.: 4.000  
+##  Max.   :83.00   Max.   :52.000</code></pre>
+<pre class="r"><code>summary(haberman[c(&quot;Year&quot;,&quot;PositiveNodes&quot;)])</code></pre>
+<pre><code>##       Year       PositiveNodes   
+##  Min.   :58.00   Min.   : 0.000  
+##  1st Qu.:60.00   1st Qu.: 0.000  
+##  Median :63.00   Median : 1.000  
+##  Mean   :62.85   Mean   : 4.026  
+##  3rd Qu.:65.75   3rd Qu.: 4.000  
+##  Max.   :69.00   Max.   :52.000</code></pre>
+</div>
+</div>
+<div class="section level2">
+<h2>Scatter Plots of the Dataset</h2>
+<div class="section level3">
+<h3>Plot 1: Age and PositiveNodes</h3>
+<pre class="r"><code>haberman %&gt;% ggvis(~Age,~Year,fill=~Status) %&gt;% layer_points()</code></pre>
+<div class="ggvis-output-container">
+<div class="ggvis-output"></div>
+<div class="plot-gear-icon">
+<nav class="ggvis-control">
+<a rel="noopener" class="ggvis-dropdown-toggle" title="Controls"></a>
+<ul class="ggvis-dropdown">
+<li>
+Renderer: 
+<a rel="noopener" class="ggvis-renderer-button">SVG</a>
+ | 
+<a rel="noopener" class="ggvis-renderer-button">Canvas</a>
+</li>
+<li>
+<a rel="noopener" class="ggvis-download">Download</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+
+</div>
+<div class="section level3">
+<h3>Plot 2: Petal Width and Petal Length</h3>
+<pre class="r"><code>haberman %&gt;% ggvis(~Age,~PositiveNodes, fill=~Status) %&gt;% layer_points() </code></pre>
+<p><div class="ggvis-output-container">
+<div class="ggvis-output"></div>
+<div class="plot-gear-icon">
+<nav class="ggvis-control">
+<a rel="noopener" class="ggvis-dropdown-toggle" title="Controls"></a>
+<ul class="ggvis-dropdown">
+<li>
+Renderer: 
+<a rel="noopener" class="ggvis-renderer-button">SVG</a>
+ | 
+<a rel="noopener" class="ggvis-renderer-button">Canvas</a>
+</li>
+<li>
+<a rel="noopener" class="ggvis-download">Download</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+ ### Plot 3:</p>
+<pre class="r"><code>haberman %&gt;% ggvis(~Year,~PositiveNodes,fill=~Status) %&gt;% layer_points()</code></pre>
+<div class="ggvis-output-container">
+<div class="ggvis-output"></div>
+<div class="plot-gear-icon">
+<nav class="ggvis-control">
+<a rel="noopener" class="ggvis-dropdown-toggle" title="Controls"></a>
+<ul class="ggvis-dropdown">
+<li>
+Renderer: 
+<a rel="noopener" class="ggvis-renderer-button">SVG</a>
+ | 
+<a rel="noopener" class="ggvis-renderer-button">Canvas</a>
+</li>
+<li>
+<a rel="noopener" class="ggvis-download">Download</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+
+<div class="section level5">
+<h5>Question: What does this show you? Is there positive or negative correlation between sepal length and width? The same way, in Plot 2, there positive or negative correlation between petal length and width?</h5>
+</div>
+<div class="section level5">
+<h5>Answer: These summaries do not give us conclusive results whether there is a positive or negative correlation among each groups. Therefore we cannot conclude anything definitely.</h5>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2>Training Dataset with 80/20%</h2>
+<div class="section level3">
+<h3>Preparing Data</h3>
+<pre class="r"><code>set.seed(3465)
+ind &lt;- sample(2,nrow(haberman), replace=TRUE, prob =c(0.8,0.2))
+habermanTrain &lt;- haberman[ind==1, 1:3]
+habermanTest &lt;- haberman[ind==2, 1:3]
+habermanTrainLabels &lt;- haberman[ind==1, 4]
+habermanTestLabels &lt;- haberman[ind==2, 4]</code></pre>
+</div>
+<div class="section level3">
+<h3>Find the k-Nearest Neighbors of the Training Set</h3>
+<pre class="r"><code>haberman_pred &lt;- knn(train = habermanTrain, test = habermanTest, cl = habermanTrainLabels, k=3)
+haberman_pred</code></pre>
+<pre><code>##  [1] Survived Survived Survived Survived Survived Survived Survived
+##  [8] Survived Survived Survived Survived Survived Survived Deseased
+## [15] Survived Survived Deseased Survived Survived Survived Survived
+## [22] Survived Deseased Survived Deseased Survived Deseased Survived
+## [29] Survived Deseased Deseased Survived Survived Survived Survived
+## [36] Survived Survived Survived Survived Survived Deseased Deseased
+## [43] Deseased Survived Survived Survived Survived Survived Survived
+## [50] Survived Survived Survived Survived Survived
+## Levels: Deseased Survived</code></pre>
+</div>
+<div class="section level3">
+<h3>Displaying Results</h3>
+<pre class="r"><code>display &lt;-CrossTable(x = habermanTestLabels, y = haberman_pred, prop.chisq = FALSE)
+pander(display, digits=1)</code></pre>
+<table style="width:83%;">
+<colgroup>
+<col width="29%"/>
+<col width="23%"/>
+<col width="15%"/>
+<col width="15%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">&#160;<br/>
+habermanTestLabels</th>
+<th align="center">haberman_pred<br/>
+Deseased</th>
+<th align="center">&#160;<br/>
+Survived</th>
+<th align="center">&#160;<br/>
+Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><strong>Deseased</strong><br/>
+N<br/>
+Row(%)<br/>
+Column(%)<br/>
+Total(%)</td>
+<td align="center">&#160;<br/>
+3<br/>
+25.0%<br/>
+30.0%<br/>
+5.6%</td>
+<td align="center">&#160;<br/>
+9<br/>
+75.0%<br/>
+20.5%<br/>
+16.7%</td>
+<td align="center">&#160;<br/>
+12<br/>
+22.2%<br/>
+<br/>
+</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>Survived</strong><br/>
+N<br/>
+Row(%)<br/>
+Column(%)<br/>
+Total(%)</td>
+<td align="center">&#160;<br/>
+7<br/>
+16.7%<br/>
+70.0%<br/>
+13.0%</td>
+<td align="center">&#160;<br/>
+35<br/>
+83.3%<br/>
+79.5%<br/>
+64.8%</td>
+<td align="center">&#160;<br/>
+42<br/>
+77.8%<br/>
+<br/>
+</td>
+</tr>
+<tr class="odd">
+<td align="center">Total<br/>
+</td>
+<td align="center">10<br/>
+18.5%</td>
+<td align="center">44<br/>
+81.5%</td>
+<td align="center">54<br/>
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>## Pander renders the CrossTable tables when RMarkdown file is knitting in html format. 
+## Otherwise, it displays an error message (in pdf) or doesn&#39;t show it altogether. </code></pre>
+</div>
+<div class="section level3">
+<h3>Testing the Prediction</h3>
+<pre class="r"><code># Put `irisTestLabels` in a data frame
+habermanTestLabels &lt;- data.frame(habermanTestLabels)
+# Merge `iris_pred` and `iris.testLabels` 
+merge &lt;- data.frame(haberman_pred, habermanTestLabels)
+# Specify column names for `merge`
+names(merge) &lt;- c(&quot;Predicted Status&quot;, &quot;Observed/Recorded Status&quot;)
+# Inspect `merge` 
+merge</code></pre>
+<pre><code>##    Predicted Status Observed/Recorded Status
+## 1          Survived                 Survived
+## 2          Survived                 Survived
+## 3          Survived                 Survived
+## 4          Survived                 Survived
+## 5          Survived                 Survived
+## 6          Survived                 Deseased
+## 7          Survived                 Survived
+## 8          Survived                 Survived
+## 9          Survived                 Survived
+## 10         Survived                 Survived
+## 11         Survived                 Survived
+## 12         Survived                 Deseased
+## 13         Survived                 Survived
+## 14         Deseased                 Survived
+## 15         Survived                 Deseased
+## 16         Survived                 Deseased
+## 17         Deseased                 Survived
+## 18         Survived                 Survived
+## 19         Survived                 Survived
+## 20         Survived                 Survived
+## 21         Survived                 Survived
+## 22         Survived                 Survived
+## 23         Deseased                 Deseased
+## 24         Survived                 Survived
+## 25         Deseased                 Survived
+## 26         Survived                 Survived
+## 27         Deseased                 Deseased
+## 28         Survived                 Survived
+## 29         Survived                 Survived
+## 30         Deseased                 Survived
+## 31         Deseased                 Deseased
+## 32         Survived                 Survived
+## 33         Survived                 Survived
+## 34         Survived                 Survived
+## 35         Survived                 Survived
+## 36         Survived                 Survived
+## 37         Survived                 Deseased
+## 38         Survived                 Survived
+## 39         Survived                 Survived
+## 40         Survived                 Survived
+## 41         Deseased                 Survived
+## 42         Deseased                 Survived
+## 43         Deseased                 Survived
+## 44         Survived                 Survived
+## 45         Survived                 Survived
+## 46         Survived                 Survived
+## 47         Survived                 Deseased
+## 48         Survived                 Survived
+## 49         Survived                 Deseased
+## 50         Survived                 Survived
+## 51         Survived                 Deseased
+## 52         Survived                 Survived
+## 53         Survived                 Survived
+## 54         Survived                 Deseased</code></pre>
+<div class="section level4">
+<h4>It appears that the prediction returned identical results with the species observed in all 20 predictions.</h4>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2>When the Training Test ratio is 67/33%</h2>
+<div class="section level3">
+<h3>Training Data</h3>
+<pre class="r"><code>set.seed(3465) ##The exercise leaves setting the seed. Unless set here, the outcomes differ. 
+ind &lt;- sample(2, nrow(haberman), replace=TRUE, prob=c(0.67,0.33))
+habermanTrain &lt;- haberman[ind==1,1:3]
+habermanTest &lt;- haberman[ind==2,1:3]
+habermanTrainLabels &lt;- haberman[ind==1,4]
+habermanTestLabels &lt;- haberman[ind==2,4]
+haberman_pred &lt;- knn(train = habermanTrain, test=habermanTest, cl = habermanTrainLabels, k=3)
+haberman_pred</code></pre>
+<pre><code>##  [1] Survived Survived Survived Survived Survived Survived Survived
+##  [8] Survived Survived Deseased Survived Survived Survived Survived
+## [15] Survived Survived Deseased Survived Survived Survived Survived
+## [22] Survived Survived Deseased Survived Deseased Deseased Survived
+## [29] Survived Survived Survived Deseased Survived Survived Deseased
+## [36] Survived Survived Survived Survived Survived Survived Survived
+## [43] Survived Survived Survived Survived Survived Deseased Deseased
+## [50] Survived Survived Deseased Survived Deseased Survived Survived
+## [57] Deseased Survived Survived Survived Survived Survived Deseased
+## [64] Survived Survived Survived Survived Survived Survived Survived
+## [71] Survived Survived Survived Survived Survived Survived Survived
+## [78] Deseased Deseased Survived Survived Survived Survived Survived
+## [85] Survived Deseased Survived Survived Survived Deseased Survived
+## [92] Survived Survived Survived Survived Survived Survived
+## Levels: Deseased Survived</code></pre>
+</div>
+<div class="section level3">
+<h3>Plot Results</h3>
+<pre class="r"><code>display &lt;- CrossTable(x = habermanTestLabels, y = haberman_pred, prop.chisq = FALSE)
+pander(display, digits=1)</code></pre>
+<table style="width:83%;">
+<colgroup>
+<col width="29%"/>
+<col width="23%"/>
+<col width="15%"/>
+<col width="15%"/>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">&#160;<br/>
+habermanTestLabels</th>
+<th align="center">haberman_pred<br/>
+Deseased</th>
+<th align="center">&#160;<br/>
+Survived</th>
+<th align="center">&#160;<br/>
+Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><strong>Deseased</strong><br/>
+N<br/>
+Row(%)<br/>
+Column(%)<br/>
+Total(%)</td>
+<td align="center">&#160;<br/>
+6<br/>
+28.6%<br/>
+35.3%<br/>
+6.2%</td>
+<td align="center">&#160;<br/>
+15<br/>
+71.4%<br/>
+18.8%<br/>
+15.5%</td>
+<td align="center">&#160;<br/>
+21<br/>
+21.6%<br/>
+<br/>
+</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>Survived</strong><br/>
+N<br/>
+Row(%)<br/>
+Column(%)<br/>
+Total(%)</td>
+<td align="center">&#160;<br/>
+11<br/>
+14.5%<br/>
+64.7%<br/>
+11.3%</td>
+<td align="center">&#160;<br/>
+65<br/>
+85.5%<br/>
+81.2%<br/>
+67.0%</td>
+<td align="center">&#160;<br/>
+76<br/>
+78.4%<br/>
+<br/>
+</td>
+</tr>
+<tr class="odd">
+<td align="center">Total<br/>
+</td>
+<td align="center">17<br/>
+17.5%</td>
+<td align="center">80<br/>
+82.5%</td>
+<td align="center">97<br/>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3>Testing the Prediction</h3>
+<pre class="r"><code># Put `irisTestLabels` in a data frame
+habermanTestLabels &lt;- data.frame(habermanTestLabels)
+# Merge `iris_pred` and `iris.testLabels` 
+merge &lt;- data.frame(haberman_pred, habermanTestLabels)
+# Specify column names for `merge`
+names(merge) &lt;- c(&quot;Predicted Species&quot;, &quot;Observed Species&quot;)
+# Inspect `merge` 
+merge</code></pre>
+<pre><code>##    Predicted Species Observed Species
+## 1           Survived         Deseased
+## 2           Survived         Survived
+## 3           Survived         Survived
+## 4           Survived         Survived
+## 5           Survived         Survived
+## 6           Survived         Survived
+## 7           Survived         Survived
+## 8           Survived         Survived
+## 9           Survived         Survived
+## 10          Deseased         Deseased
+## 11          Survived         Deseased
+## 12          Survived         Deseased
+## 13          Survived         Survived
+## 14          Survived         Survived
+## 15          Survived         Survived
+## 16          Survived         Survived
+## 17          Deseased         Survived
+## 18          Survived         Survived
+## 19          Survived         Survived
+## 20          Survived         Deseased
+## 21          Survived         Survived
+## 22          Survived         Survived
+## 23          Survived         Survived
+## 24          Deseased         Deseased
+## 25          Survived         Survived
+## 26          Deseased         Survived
+## 27          Deseased         Survived
+## 28          Survived         Deseased
+## 29          Survived         Deseased
+## 30          Survived         Deseased
+## 31          Survived         Survived
+## 32          Deseased         Survived
+## 33          Survived         Survived
+## 34          Survived         Survived
+## 35          Deseased         Survived
+## 36          Survived         Survived
+## 37          Survived         Survived
+## 38          Survived         Survived
+## 39          Survived         Survived
+## 40          Survived         Survived
+## 41          Survived         Survived
+## 42          Survived         Survived
+## 43          Survived         Survived
+## 44          Survived         Deseased
+## 45          Survived         Survived
+## 46          Survived         Survived
+## 47          Survived         Survived
+## 48          Deseased         Deseased
+## 49          Deseased         Deseased
+## 50          Survived         Survived
+## 51          Survived         Survived
+## 52          Deseased         Survived
+## 53          Survived         Survived
+## 54          Deseased         Deseased
+## 55          Survived         Survived
+## 56          Survived         Survived
+## 57          Deseased         Survived
+## 58          Survived         Deseased
+## 59          Survived         Survived
+## 60          Survived         Survived
+## 61          Survived         Survived
+## 62          Survived         Deseased
+## 63          Deseased         Survived
+## 64          Survived         Survived
+## 65          Survived         Survived
+## 66          Survived         Survived
+## 67          Survived         Survived
+## 68          Survived         Deseased
+## 69          Survived         Survived
+## 70          Survived         Survived
+## 71          Survived         Survived
+## 72          Survived         Survived
+## 73          Survived         Deseased
+## 74          Survived         Survived
+## 75          Survived         Survived
+## 76          Survived         Survived
+## 77          Survived         Survived
+## 78          Deseased         Survived
+## 79          Deseased         Survived
+## 80          Survived         Survived
+## 81          Survived         Survived
+## 82          Survived         Survived
+## 83          Survived         Survived
+## 84          Survived         Survived
+## 85          Survived         Survived
+## 86          Deseased         Deseased
+## 87          Survived         Survived
+## 88          Survived         Survived
+## 89          Survived         Deseased
+## 90          Deseased         Survived
+## 91          Survived         Survived
+## 92          Survived         Survived
+## 93          Survived         Deseased
+## 94          Survived         Survived
+## 95          Survived         Survived
+## 96          Survived         Survived
+## 97          Survived         Deseased</code></pre>
+<div class="section level4">
+<h4>Here two wrong predictions were observed on rows 23rd and 25th by producing Virginica instead of Versicolor.</h4>
+</div>
+</div>
+<div class="section level3">
+<h3>Normalize Dataset</h3>
+<div class="section level4">
+<h4>The purpose of normilizing is to gize the KNN tool to better predict information.</h4>
+<pre class="r"><code>normalize &lt;- function(x) {
+num &lt;- x - min(x)
+denom &lt;- max(x) - min(x)
+return (num/denom)
+}
+haberman_x &lt;- as.data.frame(lapply(haberman[1:3], normalize))
+summary(haberman)</code></pre>
+<pre><code>##       Age             Year       PositiveNodes         Status   
+##  Min.   :30.00   Min.   :58.00   Min.   : 0.000   Deseased: 81  
+##  1st Qu.:44.00   1st Qu.:60.00   1st Qu.: 0.000   Survived:225  
+##  Median :52.00   Median :63.00   Median : 1.000                 
+##  Mean   :52.46   Mean   :62.85   Mean   : 4.026                 
+##  3rd Qu.:60.75   3rd Qu.:65.75   3rd Qu.: 4.000                 
+##  Max.   :83.00   Max.   :69.00   Max.   :52.000</code></pre>
+<pre class="r"><code>summary(haberman_x)</code></pre>
+<pre><code>##       Age              Year        PositiveNodes    
+##  Min.   :0.0000   Min.   :0.0000   Min.   :0.00000  
+##  1st Qu.:0.2642   1st Qu.:0.1818   1st Qu.:0.00000  
+##  Median :0.4151   Median :0.4545   Median :0.01923  
+##  Mean   :0.4237   Mean   :0.4412   Mean   :0.07743  
+##  3rd Qu.:0.5802   3rd Qu.:0.7045   3rd Qu.:0.07692  
+##  Max.   :1.0000   Max.   :1.0000   Max.   :1.00000</code></pre>
+<pre class="r"><code>## My attempt below is to see if I can get the normalized version of haberman from haberman_x by binding the fourth colument (Status)
+haberman &lt;- as.data.frame(cbind(haberman_x$Age,haberman_x$Year,haberman_x$PositiveNodes,haberman$Status))
+setnames(haberman, old=c(&quot;V1&quot;,&quot;V2&quot;,&quot;V3&quot;,&quot;V4&quot;), new=c(&quot;Age&quot;,&quot;Year&quot;,&quot;PositiveNodes&quot;,&quot;Status&quot;))
+
+haberman$Status[haberman$Status == 1] &lt;- &quot;Survived&quot;
+haberman$Status[haberman$Status == 2] &lt;- &quot;Deseased&quot;
+haberman$Status &lt;- as.factor(haberman$Status)
+summary(haberman) </code></pre>
+<pre><code>##       Age              Year        PositiveNodes          Status   
+##  Min.   :0.0000   Min.   :0.0000   Min.   :0.00000   Deseased:225  
+##  1st Qu.:0.2642   1st Qu.:0.1818   1st Qu.:0.00000   Survived: 81  
+##  Median :0.4151   Median :0.4545   Median :0.01923                 
+##  Mean   :0.4237   Mean   :0.4412   Mean   :0.07743                 
+##  3rd Qu.:0.5802   3rd Qu.:0.7045   3rd Qu.:0.07692                 
+##  Max.   :1.0000   Max.   :1.0000   Max.   :1.00000</code></pre>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2>Resources/References Utilized</h2>
+<p><a rel="noopener" href="https://www.datacamp.com/community/tutorials/machine-learning-in-r" class="uri">https://www.datacamp.com/community/tutorials/machine-learning-in-r</a> <a rel="noopener" href="https://stats.stackexchange.com/questions/86285/random-number-set-seedn-in-r" class="uri">https://stats.stackexchange.com/questions/86285/random-number-set-seedn-in-r</a> <a rel="noopener" href="https://www.geeksforgeeks.org/regression-classification-supervised-machine-learning/" class="uri">https://www.geeksforgeeks.org/regression-classification-supervised-machine-learning/</a> <a rel="noopener" href="https://stackoverflow.com/questions/9251326/convert-data-frame-column-format-from-character-to-factor/9252447" class="uri">https://stackoverflow.com/questions/9251326/convert-data-frame-column-format-from-character-to-factor/9252447</a></p>
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="/d2l/common/math/MathML.js?v=20.22.3.35896 "></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() { D2LMathML.DesktopInit('https://s.brightspace.com/lib/mathjax/2.7.4/MathJax.js?config=MML_HTMLorMML','https://s.brightspace.com/lib/mathjax/2.7.4/MathJax.js?config=TeX-AMS-MML_HTMLorMML','130',false); });</script></body></html>
