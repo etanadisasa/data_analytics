@@ -1,0 +1,165 @@
+---
+title: "MSDS Assignment One"
+author: "Etana Disasa"
+date: "10/28/2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## SUMMARY STATS
+
+This series provides detailed industry statistics by geographic area for establishments of firms with paid employees. Data are shown on the 2012 North American Industry Classification System (NAICS) basis. These data was acquired from The United States Census Bereau. 
+<https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?src=bkmk#>
+
+In order to access the file in R and to analyze the file, the following libraries would need to be loaded. 
+```{r load_libs}
+library(data.table)
+library(e1071)
+```
+
+Our data was downloaded as a *.csv file. The line below imports the data as "ecosens" from the ECN_2012_US_55A1 which is in our working folder. 
+```{r load_data}
+ecosens <- read.csv("ECN_2012_US_55A1/ECN_2012_US_55A1_with_ann.csv")
+```
+
+This dataset has 356 Observations of 11 variable. GEO.id and GEO.id2 identify each state and teritory of the US along with STATES which denotes the names of each. SECTORID code and SECTORS provide unique ids and labels to identify the business sectors. This data was collected in the year 2012 which is in the YEAR. SECTORS lists the number of establishments; RCPTOT displays total revenue (in $1,000); PAYANN displays annual payment (in $1,000); PAYQTR1 records the payments made in the first financial quarter; and EMP displays the number of employees. Below is the summary. 
+
+```{r}
+summary(ecosens)
+```
+Callilng the dataset at a data table helps us maneuver during the analysis process because datatables are both datatable and dataframe datatypes. Presently our dataset is a dataframe datatye.
+```{r}
+class(ecosens)
+```
+Therefore, converting the datatype into a datatable format looks like this. The new format now is named ecosnse.dt. 
+
+```{r class}
+ecosens.dt <- as.data.table(ecosens)
+class(ecosens.dt)
+```
+The number of establishements in each state provides an explanation as to 
+why the employee numbers vary. For example, the average (mean) establishment 
+per  state is displayed below. 
+```{r summary_mean}
+head(ecosens.dt[, mean(ESTAB), by=STATES])
+## Or the number of establishments with in each sectors are displayed below. 
+ecosens.dt[, mean(ESTAB), by=SECTORS]
+```
+
+## General Employee Analysis
+Below is a few lines of the total number of employed individuals in  each state and territory in the United States.
+```{r summary_sum}
+head(ecosens.dt[, sum(EMP), by=STATES])
+# These makes up for a total of employed individuals 0f 16,490,387 which is displayed  from below. 
+sum(ecosens.dt$EMP)
+```
+
+## Summary of Annual Payments made to employees in $1,000s. 
+```{r summary_summary}
+# The minimum amout of payment made by each sector is displayed below. 
+ecosens.dt[, min(PAYANN), by=SECTORS]
+# The median annual payment for employees in each sector is displayed below. 
+ecosens.dt[, median(PAYANN), by=SECTORS]
+# The average(mean) annual payment for employees is displayed below. 
+ecosens.dt[, mean(PAYANN), by=SECTORS]
+# The max annual payment for employees is displayed below. 
+ecosens.dt[, max(PAYANN), by=SECTORS]
+# Standard Deviation by each sector is as follows. 
+ecosens.dt[, sd(PAYANN), by=SECTORS]
+# Across the United States, and across each sector, the summary of annual payment is as follows. 
+summary(ecosens.dt$PAYANN)
+# Standard Deviation
+sd(ecosens.dt$PAYANN)
+```
+
+## PLOTTING
+Below are boxplot, plot and histogram presentation of the annual payment (PAYANN) distribution made in the year 2012.
+
+```{r data_plots1, results='hide'}
+library(ggplot2)
+# Boxplot
+ecosens.dt [, boxplot(PAYANN, col="red")]
+# Plot
+ecosens.dt [, plot(PAYANN)]
+# Histogram
+ecosens.dt [, hist(PAYANN)]
+
+```
+
+## Discussing the histogram
+The histogram above appears to be positively skewed or skewed to the right. This is 
+due to the fact that the mean (average) is greater than the median. The median is 
+also very close the 1st quartile (25% quantile) which is the reason for the skewness.  
+
+
+##BONUS STATISTICS
+For the next section, we need "e1071" and "moments" libraries installed and loaded. 
+```{r load_plots2, results='hide'}
+library(moments)
+library(e1071)
+```
+
+## Kurtosis
+The kurtosis of payment is positive, which indicates that the payment distribution is mesokurtic. This is consistent with the fact that its histogram is not bell-shaped but skewed to the right.
+```{r kurtosis_PAYANN}
+ecosens.dt [, kurtosis(PAYANN)]
+```
+
+## Skewness
+The skewness of payment is 2.329521. It indicates that the payment distribution is skewed towards the right as it is displayed in the historam above.
+```{r skewness_PAYANN}
+ecosens.dt [, skewness(PAYANN)]
+```
+
+## Moments
+```{r moments_PAYANN}
+ecosens.dt [, all.moments(PAYANN)]
+```
+
+## Correlations
+The correlation coefficient of PAYMENT (total payments made) and PAYQTR1 (payments made in the first quarter) is 0.90081. Since it is rather close to 1, we can conclude that the variables are positively linearly related.
+```{r correlations}
+ecosens.dt [, cor(PAYANN,PAYQTR1)]
+```
+
+## Quantiles
+The quartiles are quantile values of each quarter. Here the 0% (min value) the 25% (1st quartile value), the 50% (2nd quartile and also the median), the 75% (3rd quartile value) and 100% (max value) are also displayed above under the summary of the PAYANN distribution.
+```{r quantiles}
+ecosens.dt [, quantile(PAYANN)]
+# Other than quartiles, quantiles could also be sepcified as shown below. 
+ecosens.dt [, quantile(PAYANN, c(.333, .666, 1.0))]
+# This quantile values displayed are the thirdth of the PAYANN distribution. 
+```
+
+## BONUS PLOTS
+The following plots used here are Bee Swarm plots. The library "beeswarM" is downloaded, and loaded here from below. This plotting tool displays a distribution using one axis and plotting values left and right.
+
+## Beeswarm with one variable
+```{r load_lib_plots3, echo=FALSE, results='hide'}
+library(beeswarm)
+ecosens.dt [, beeswarm(PAYANN, pch=10) ]
+```
+
+## Beeswarm with multiple variables
+Below, the same tool is used to display PAYANN distribution against SECTORID. Furthermore, more attributes are included to color code the different SECTORID,lable the x and y axises and make sure the plots do not overlap. 
+
+
+```{r load_lib_plots4 , echo=FALSE, results='hide'}
+ecosens.dt [, beeswarm(PAYANN~SECTORID, method="swarm", col=1:7, 
+                       pch=20, corral="gutter", cex=.50, xlab="BUSINESS SECTORS",
+                       ylab="ANNUAL PAYMENTS IN $1000S") ]
+# This beeswarm plot displays PAYANN observation against the SECTORID. 
+```
+
+
+## RESOURCES
+The United States Census Bereau. 
+<https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?src=bkmk#>
+
+R-TUTORIAL: An R Introduction to Statistics
+<http://www.r-tutor.com/>
+
+R Documentation
+<https://www.rdocumentation.org>

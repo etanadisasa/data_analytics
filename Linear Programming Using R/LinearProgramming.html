@@ -1,0 +1,311 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head></head><body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid main-container">
+
+
+
+
+
+
+
+
+
+
+
+<div class="fluid-row">
+
+
+
+<h1 class="title toc-ignore">Linear Programming Exercise</h1>
+<h4 class="author"><em>Etana Disasa</em></h4>
+<h4 class="date"><em>12/17/2018</em></h4>
+
+</div>
+
+
+<div class="section level2">
+<h2>Linear Programming in R using Ipsolve</h2>
+<div class="section level3">
+<h3>Problem 1</h3>
+<div class="section level5">
+<h5>Using a linear problem from a math class the scenario is: “A farmer has 10 acres to plant in wheat and rye. He has to plant at least 7 acres. However, he has only $1200 to spend and each acre of wheat costs $200 to plant and each acre of rye costs $100 to plant. Moreover, the farmer has to get the planting done in 12 hours and it takes an hour to plant an acre of wheat and 2 hours to plant an acre of rye. If the profit is $500 per acre of wheat and $300 per acre of rye how many acres of each should be planted to maximize profits?” (Wilson)</h5>
+</div>
+</div>
+<div class="section level3">
+<h3>Solution 1</h3>
+<pre class="r"><code>library(lpSolveAPI)
+lprec &lt;- make.lp(0,2) #Two crop types; two variable to work with.
+lp.control(lprec, sense=&quot;max&quot;)</code></pre>
+<pre><code>## $anti.degen
+## [1] &quot;fixedvars&quot; &quot;stalling&quot; 
+## 
+## $basis.crash
+## [1] &quot;none&quot;
+## 
+## $bb.depthlimit
+## [1] -50
+## 
+## $bb.floorfirst
+## [1] &quot;automatic&quot;
+## 
+## $bb.rule
+## [1] &quot;pseudononint&quot; &quot;greedy&quot;       &quot;dynamic&quot;      &quot;rcostfixing&quot; 
+## 
+## $break.at.first
+## [1] FALSE
+## 
+## $break.at.value
+## [1] 1e+30
+## 
+## $epsilon
+##       epsb       epsd      epsel     epsint epsperturb   epspivot 
+##      1e-10      1e-09      1e-12      1e-07      1e-05      2e-07 
+## 
+## $improve
+## [1] &quot;dualfeas&quot; &quot;thetagap&quot;
+## 
+## $infinite
+## [1] 1e+30
+## 
+## $maxpivot
+## [1] 250
+## 
+## $mip.gap
+## absolute relative 
+##    1e-11    1e-11 
+## 
+## $negrange
+## [1] -1e+06
+## 
+## $obj.in.basis
+## [1] TRUE
+## 
+## $pivoting
+## [1] &quot;devex&quot;    &quot;adaptive&quot;
+## 
+## $presolve
+## [1] &quot;none&quot;
+## 
+## $scalelimit
+## [1] 5
+## 
+## $scaling
+## [1] &quot;geometric&quot;   &quot;equilibrate&quot; &quot;integers&quot;   
+## 
+## $sense
+## [1] &quot;maximize&quot;
+## 
+## $simplextype
+## [1] &quot;dual&quot;   &quot;primal&quot;
+## 
+## $timeout
+## [1] 0
+## 
+## $verbose
+## [1] &quot;neutral&quot;</code></pre>
+<div class="section level4">
+<h4>To solve this problem, if wheat is denoted by x, and rye with y, then:</h4>
+</div>
+<div class="section level4">
+<h4>1. 200x + 100y &lt;= 1200</h4>
+</div>
+<div class="section level4">
+<h4>2. x + 2y &lt;= 12</h4>
+</div>
+<div class="section level4">
+<h4>3. x + y &lt;= 10</h4>
+</div>
+<div class="section level4">
+<h4>4. 1(500x) + 2(300y) = g; which is the optimizing function</h4>
+<pre class="r"><code>set.objfn(lprec, c(1*500, 2*300)) 
+add.constraint(lprec, c(200, 100), &quot;&lt;=&quot;, 1200)
+add.constraint(lprec, c(1, 2), &quot;&lt;=&quot;, 12)
+add.constraint(lprec, c(1, 1), &quot;&lt;=&quot;, 10)
+lprec</code></pre>
+<pre><code>## Model name: 
+##             C1    C2          
+## Maximize   500   600          
+## R1         200   100  &lt;=  1200
+## R2           1     2  &lt;=    12
+## R3           1     1  &lt;=    10
+## Kind       Std   Std          
+## Type      Real  Real          
+## Upper      Inf   Inf          
+## Lower        0     0</code></pre>
+<pre class="r"><code>solve(lprec)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>get.objective(lprec)</code></pre>
+<pre><code>## [1] 4400</code></pre>
+<pre class="r"><code>get.variables(lprec)</code></pre>
+<pre><code>## [1] 4 4</code></pre>
+</div>
+<div class="section level4">
+<h4>The result shows that the farmer should plan (4, 4) acres of wheat and rye consecutively. With this optimization, he/she will be able to make a total of $4400 in profit.</h4>
+</div>
+</div>
+<div class="section level3">
+<h3>Problem 2</h3>
+<div class="section level4">
+<h4>Using a linear problem from a math class the scenario is: “A gold processor has two sources of gold ore, source A and source B. In order to keep his plant running, at least three tons of ore must be processed each day. Ore from source A costs $20 per ton to process, and ore from source B costs $10 per ton to process. Costs must be kept to less than $80 per day. Moreover, Federal Regulations require that the amount of ore from source B cannot exceed twice the amount of ore from source A. If ore from source A yields 2 oz. of gold per ton, and ore from source B yields 3 oz. of gold per ton, <em>how many tons of ore from both sources must be processed each day to maximize the amount of gold extracted subject to the above constraints?”</em> (Wilson) ###Solution 2</h4>
+<pre class="r"><code>lprec &lt;- make.lp(0,2) # We have here 2 sources; therefore, 2 variable. 
+lp.control(lprec, sense=&quot;max&quot;)</code></pre>
+<pre><code>## $anti.degen
+## [1] &quot;fixedvars&quot; &quot;stalling&quot; 
+## 
+## $basis.crash
+## [1] &quot;none&quot;
+## 
+## $bb.depthlimit
+## [1] -50
+## 
+## $bb.floorfirst
+## [1] &quot;automatic&quot;
+## 
+## $bb.rule
+## [1] &quot;pseudononint&quot; &quot;greedy&quot;       &quot;dynamic&quot;      &quot;rcostfixing&quot; 
+## 
+## $break.at.first
+## [1] FALSE
+## 
+## $break.at.value
+## [1] 1e+30
+## 
+## $epsilon
+##       epsb       epsd      epsel     epsint epsperturb   epspivot 
+##      1e-10      1e-09      1e-12      1e-07      1e-05      2e-07 
+## 
+## $improve
+## [1] &quot;dualfeas&quot; &quot;thetagap&quot;
+## 
+## $infinite
+## [1] 1e+30
+## 
+## $maxpivot
+## [1] 250
+## 
+## $mip.gap
+## absolute relative 
+##    1e-11    1e-11 
+## 
+## $negrange
+## [1] -1e+06
+## 
+## $obj.in.basis
+## [1] TRUE
+## 
+## $pivoting
+## [1] &quot;devex&quot;    &quot;adaptive&quot;
+## 
+## $presolve
+## [1] &quot;none&quot;
+## 
+## $scalelimit
+## [1] 5
+## 
+## $scaling
+## [1] &quot;geometric&quot;   &quot;equilibrate&quot; &quot;integers&quot;   
+## 
+## $sense
+## [1] &quot;maximize&quot;
+## 
+## $simplextype
+## [1] &quot;dual&quot;   &quot;primal&quot;
+## 
+## $timeout
+## [1] 0
+## 
+## $verbose
+## [1] &quot;neutral&quot;</code></pre>
+</div>
+<div class="section level4">
+<h4>Suppose source A is denoted by x, and source B with y, then:</h4>
+</div>
+<div class="section level4">
+<h4>1. 20x + 10y &lt;= 80</h4>
+</div>
+<div class="section level4">
+<h4>2. 2x &gt;= y which is equvalent to <em>2x - y &gt;= 0</em></h4>
+</div>
+<div class="section level4">
+<h4>4. 2x + 3y = g; which is the optimizing function</h4>
+<pre class="r"><code>set.objfn(lprec, c(2,3))
+add.constraint(lprec, c(20,10), &quot;&lt;=&quot;, 80)
+add.constraint(lprec, c(2,-1), &quot;&gt;=&quot;, 0)
+lprec</code></pre>
+<pre><code>## Model name: 
+##             C1    C2        
+## Maximize     2     3        
+## R1          20    10  &lt;=  80
+## R2           2    -1  &gt;=   0
+## Kind       Std   Std        
+## Type      Real  Real        
+## Upper      Inf   Inf        
+## Lower        0     0</code></pre>
+<pre class="r"><code>solve(lprec)</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>get.objective(lprec)</code></pre>
+<pre><code>## [1] 16</code></pre>
+<pre class="r"><code>get.variables(lprec)</code></pre>
+<pre><code>## [1] 2 4</code></pre>
+</div>
+<div class="section level4">
+<h4>In other words, the amount of ore we need to process from Source A and Source B is 2, 4 tones respectively. With this production, we will be able to produce a total of 16oz. of gold.</h4>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="/d2l/common/math/MathML.js?v=20.22.3.35896 "></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() { D2LMathML.DesktopInit('https://s.brightspace.com/lib/mathjax/2.7.4/MathJax.js?config=MML_HTMLorMML','https://s.brightspace.com/lib/mathjax/2.7.4/MathJax.js?config=TeX-AMS-MML_HTMLorMML','130',false); });</script></body></html>

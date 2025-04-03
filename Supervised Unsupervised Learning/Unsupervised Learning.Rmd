@@ -1,0 +1,85 @@
+---
+title: "UnSupervised Learning"
+author: "Etana Disasa"
+date: "12/15/2018"
+output: html_document
+---
+##### Question 1. How is unsupervised learning related to the statistical clustering problem?
+##### Answer 1. Unsupervised learning method uses cluter analysis method to find hidden patterns in a given data set, and group them into cluster. These grouping models use exploratory data analysis. Unsupervised learning, unlike Supervised learning, does not take input data to learn patterns. 
+##### Question 2. What packages (in R, Python...) perform unsupervised learning?
+##### Answer 2: R [kmeans, NBClust, clusters], Pythong [kmeans, MeanShift, SpectraClustering, AgglomerativeClustering]
+##### Question 3. What measures of quality for the learning algorithm might you expect to see?
+##### Answer 3: It is my understanding that when we have either positive or negative correlations between data variables, the prediction can be more accurate. 
+
+## Exercise
+#### Loading the Iris Dataset into R and Verify Data
+```{r}
+data(iris)
+head(iris)
+```
+
+### Set Seed, Apply Kmeans Function
+```{r}
+set.seed(25)
+summary(iris)
+km <- kmeans(iris[,1:4], 3,nstart=25)
+km
+km$size 
+## Added this line to see the sizes of each cluster. The sizes are 62/38/50. In a perfect prediction, these sizes would have been 50/50/50
+table(km$cluster,iris$Species)
+```
+### Compare the Clusters with the Species and Plot Results
+```{r}
+table(km$cluster,iris$Species)
+plot(iris[,1], iris[,2], col=km$cluster)
+points(km$centers[,c(1,2)], col=1:3, pch=8, cex =2)
+plot(iris[,3], iris[,4], col=km$cluster)
+points(km$centers[,c(3,4)], col=1:3, pch=8, cex=2)
+```
+
+
+
+## Assignment
+### Loading the Haberman Dataset into R and Verify Data
+##### I have factorized the Status column and changed the observations into "Survived" and "Deseased" values. 
+```{r}
+library(data.table)
+knitr::opts_chunk$set(echo = TRUE)
+haberman <- read.csv("haberman.data.csv", header=FALSE)
+setnames(haberman, old=c("V1","V2","V3","V4"), new=c("Age","Year","PositiveNodes","Status"))
+haberman$Status[haberman$Status == 1] <- "Survived"
+haberman$Status[haberman$Status == 2] <- "Deseased"
+haberman$Status <- as.factor(haberman$Status)
+```
+### Set Seed, Apply K-means Function
+```{r}
+set.seed(25)
+summary(haberman)
+km <- kmeans(haberman[,1:3], 2, nstart=25)
+km
+```
+### Compare the Clusters with the Species and Plot Results
+```{r}
+table(km$cluster,haberman$Status)
+km$size ## Added the cluster sizes for comparison with the above table. 
+```
+
+##### The first cluster contains 165 observations and predicted 43 "Deseased" and 122 "Survived". It was supposed to contain 225 observations of all "Survived" Status. The 43 "Deseased" were predicted by error. 
+##### The second cluster contains 141 obersations of which 38 are predicted as "Deseased" and 103 as "Survived". Nevertheless, it was supposed be 81 predictions of all "Deseased" Status observations. Therefore, it had wrongfully predicted 103 observations as "Survived"
+
+```{r}
+plot(haberman[,1], haberman[,2], col=km$cluster) #Plots by Age, Year
+points(km$centers[,c(1,2)], col=1:2, pch=8, cex =3) 
+plot(haberman[,1], haberman[,3], col=km$cluster) #Plots by Age, PositiveNodes
+points(km$centers[,c(1,3)], col=1:2, pch=8, cex=2)
+plot(haberman[,2], haberman[,3], col=km$cluster) #Plots by Year, PositiveNodes
+points(km$centers[,c(2,3)], col=1:2, pch=8, cex=2)
+```
+
+##### To conclude here, I would say, because there is not any linear correlations (+ve, or -ve) between the Age, Year and PositiveNodes, the prediction was not very promising. 
+
+### Resources
+#####https://www.mathworks.com/discovery/unsupervised-learning.html
+#####https://www.datanovia.com/en/blog/types-of-clustering-methods-overview-and-quick-start-r-code/
+#####https://hdbscan.readthedocs.io/en/latest/comparing_clustering_algorithms.html
+#####https://towardsdatascience.com/data-correlation-can-make-or-break-your-machine-learning-project-82ee11039cc9

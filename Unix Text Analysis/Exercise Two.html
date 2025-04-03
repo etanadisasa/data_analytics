@@ -1,0 +1,650 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head></head><body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+    
+    
+
+  <div class="border-box-sizing">
+    <div class="container">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&#160;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;Deuteronomy5.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&#160;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;Deuteronomy5.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">operator</span><span class="o">,</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">string</span>
+<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">deutero</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+    <span class="n">line</span><span class="o">=</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+        <span class="n">word</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">new_word</span> <span class="o">=</span> <span class="n">word</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">maketrans</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="n">string</span><span class="o">.</span><span class="n">punctuation</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">new_word</span> <span class="ow">in</span> <span class="n">deutero</span><span class="p">:</span>
+            <span class="n">deutero</span><span class="p">[</span><span class="n">new_word</span><span class="p">]</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">deutero</span><span class="p">[</span><span class="n">new_word</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&#160;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">sorted_deutero</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">deutero</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">elapsed</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+<span class="k">print</span> <span class="s1">&#39;Run took&#39;</span><span class="p">,</span> <span class="n">elapsed</span><span class="p">,</span> <span class="s1">&#39; seconds.&#39;</span>
+<span class="k">print</span> <span class="s1">&#39;Number of distinct words: &#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_deutero</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Run took 0.466912984848  seconds.
+Number of distinct words:  295
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&#160;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">npopular</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">x</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">npopular</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npopular</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="p">[</span><span class="n">sorted_deutero</span><span class="p">[</span><span class="n">pair</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="k">print</span> <span class="n">sorted_deutero</span><span class="p">[</span><span class="n">pair</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>(&#39;the&#39;, 52)
+(&#39;and&#39;, 41)
+(&#39;of&#39;, 34)
+(&#39;that&#39;, 27)
+(&#39;thy&#39;, 26)
+(&#39;jehovah&#39;, 24)
+(&#39;thou&#39;, 20)
+(&#39;god&#39;, 19)
+(&#39;in&#39;, 16)
+(&#39;unto&#39;, 15)
+(&#39;them&#39;, 15)
+(&#39;shalt&#39;, 14)
+(&#39;ye&#39;, 13)
+(&#39;all&#39;, 12)
+(&#39;to&#39;, 12)
+(&#39;thee&#39;, 12)
+(&#39;with&#39;, 11)
+(&#39;nor&#39;, 10)
+(&#39;his&#39;, 9)
+(&#39;not&#39;, 9)
+(&#39;your&#39;, 9)
+(&#39;me&#39;, 9)
+(&#39;it&#39;, 9)
+(&#39;out&#39;, 8)
+(&#39;have&#39;, 8)
+(&#39;may&#39;, 8)
+(&#39;a&#39;, 8)
+(&#39;for&#39;, 7)
+(&#39;shall&#39;, 7)
+(&#39;we&#39;, 7)
+(&#39;or&#39;, 7)
+(&#39;fire&#39;, 7)
+(&#39;us&#39;, 7)
+(&#39;voice&#39;, 7)
+(&#39;is&#39;, 7)
+(&#39;as&#39;, 7)
+(&#39;which&#39;, 7)
+(&#39;i&#39;, 7)
+(&#39;do&#39;, 6)
+(&#39;day&#39;, 6)
+(&#39;our&#39;, 6)
+(&#39;this&#39;, 6)
+(&#39;you&#39;, 6)
+(&#39;they&#39;, 5)
+(&#39;neither&#39;, 5)
+(&#39;speak&#39;, 5)
+(&#39;midst&#39;, 5)
+(&#39;heard&#39;, 5)
+(&#39;commanded&#39;, 5)
+(&#39;land&#39;, 5)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&#160;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">sorted_deutero</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[20]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[(&#39;the&#39;, 52),
+ (&#39;and&#39;, 41),
+ (&#39;of&#39;, 34),
+ (&#39;that&#39;, 27),
+ (&#39;thy&#39;, 26),
+ (&#39;jehovah&#39;, 24),
+ (&#39;thou&#39;, 20),
+ (&#39;god&#39;, 19),
+ (&#39;in&#39;, 16),
+ (&#39;unto&#39;, 15)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&#160;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">nltk.corpus</span> <span class="kn">import</span> <span class="n">gutenberg</span>
+<span class="n">gutenberg</span><span class="o">.</span><span class="n">fileids</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[u&#39;austen-emma.txt&#39;,
+ u&#39;austen-persuasion.txt&#39;,
+ u&#39;austen-sense.txt&#39;,
+ u&#39;bible-kjv.txt&#39;,
+ u&#39;blake-poems.txt&#39;,
+ u&#39;bryant-stories.txt&#39;,
+ u&#39;burgess-busterbrown.txt&#39;,
+ u&#39;carroll-alice.txt&#39;,
+ u&#39;chesterton-ball.txt&#39;,
+ u&#39;chesterton-brown.txt&#39;,
+ u&#39;chesterton-thursday.txt&#39;,
+ u&#39;edgeworth-parents.txt&#39;,
+ u&#39;melville-moby_dick.txt&#39;,
+ u&#39;milton-paradise.txt&#39;,
+ u&#39;shakespeare-caesar.txt&#39;,
+ u&#39;shakespeare-hamlet.txt&#39;,
+ u&#39;shakespeare-macbeth.txt&#39;,
+ u&#39;whitman-leaves.txt&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&#160;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;Exodus30.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="kn">import</span> <span class="nn">string</span><span class="o">,</span> <span class="nn">re</span><span class="o">,</span> <span class="nn">operator</span>
+<span class="kn">from</span> <span class="nn">nltk.corpus</span> <span class="kn">import</span> <span class="n">stopwords</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&#160;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+<span class="n">exodus</span> <span class="o">=</span> <span class="n">g</span>
+<span class="n">exodus</span><span class="p">[:</span><span class="mi">50</span><span class="p">]</span>
+<span class="s1">&#39;</span><span class="se">\xef\xbb\xbf\r\n\r\n</span><span class="s1">thou shalt&#39;</span>
+<span class="n">exodus</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\W+&#39;</span><span class="p">,</span><span class="n">exodus</span><span class="p">)</span>
+<span class="n">exodus</span><span class="p">[:</span><span class="mi">50</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[22]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;1&#39;,
+ &#39;and&#39;,
+ &#39;thou&#39;,
+ &#39;shalt&#39;,
+ &#39;make&#39;,
+ &#39;an&#39;,
+ &#39;altar&#39;,
+ &#39;to&#39;,
+ &#39;burn&#39;,
+ &#39;incense&#39;,
+ &#39;upon&#39;,
+ &#39;of&#39;,
+ &#39;acacia&#39;,
+ &#39;wood&#39;,
+ &#39;shalt&#39;,
+ &#39;thou&#39;,
+ &#39;make&#39;,
+ &#39;it&#39;,
+ &#39;2&#39;,
+ &#39;a&#39;,
+ &#39;cubit&#39;,
+ &#39;shall&#39;,
+ &#39;be&#39;,
+ &#39;the&#39;,
+ &#39;length&#39;,
+ &#39;thereof&#39;,
+ &#39;and&#39;,
+ &#39;a&#39;,
+ &#39;cubit&#39;,
+ &#39;the&#39;,
+ &#39;breadth&#39;,
+ &#39;thereof&#39;,
+ &#39;foursquare&#39;,
+ &#39;shall&#39;,
+ &#39;it&#39;,
+ &#39;be&#39;,
+ &#39;and&#39;,
+ &#39;two&#39;,
+ &#39;cubits&#39;,
+ &#39;shall&#39;,
+ &#39;be&#39;,
+ &#39;the&#39;,
+ &#39;height&#39;,
+ &#39;thereof&#39;,
+ &#39;the&#39;,
+ &#39;horns&#39;,
+ &#39;thereof&#39;,
+ &#39;shall&#39;,
+ &#39;be&#39;,
+ &#39;of&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&#160;[23]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">nltk.corpus</span> <span class="kn">import</span> <span class="n">stopwords</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&#160;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">stop</span> <span class="o">=</span> <span class="n">stopwords</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="s1">&#39;english&#39;</span><span class="p">)</span>
+<span class="n">exodus</span> <span class="o">=</span> <span class="p">[</span><span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">exodus</span> <span class="k">if</span> <span class="n">j</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stop</span><span class="p">]</span>
+<span class="n">exodus</span><span class="p">[:</span><span class="mi">50</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[24]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;1&#39;,
+ &#39;thou&#39;,
+ &#39;shalt&#39;,
+ &#39;make&#39;,
+ &#39;altar&#39;,
+ &#39;burn&#39;,
+ &#39;incense&#39;,
+ &#39;upon&#39;,
+ &#39;acacia&#39;,
+ &#39;wood&#39;,
+ &#39;shalt&#39;,
+ &#39;thou&#39;,
+ &#39;make&#39;,
+ &#39;2&#39;,
+ &#39;cubit&#39;,
+ &#39;shall&#39;,
+ &#39;length&#39;,
+ &#39;thereof&#39;,
+ &#39;cubit&#39;,
+ &#39;breadth&#39;,
+ &#39;thereof&#39;,
+ &#39;foursquare&#39;,
+ &#39;shall&#39;,
+ &#39;two&#39;,
+ &#39;cubits&#39;,
+ &#39;shall&#39;,
+ &#39;height&#39;,
+ &#39;thereof&#39;,
+ &#39;horns&#39;,
+ &#39;thereof&#39;,
+ &#39;shall&#39;,
+ &#39;one&#39;,
+ &#39;piece&#39;,
+ &#39;3&#39;,
+ &#39;thou&#39;,
+ &#39;shalt&#39;,
+ &#39;overlay&#39;,
+ &#39;pure&#39;,
+ &#39;gold&#39;,
+ &#39;top&#39;,
+ &#39;thereof&#39;,
+ &#39;sides&#39;,
+ &#39;thereof&#39;,
+ &#39;round&#39;,
+ &#39;horns&#39;,
+ &#39;thereof&#39;,
+ &#39;thou&#39;,
+ &#39;shalt&#39;,
+ &#39;make&#39;,
+ &#39;unto&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&#160;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="c1"># I didn&#39;t wand to remove words here, but I had used the &quot;remove&quot; </span>
+<span class="c1"># command to get rid of the bible verse number. </span>
+<span class="n">remove_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">,</span><span class="s1">&#39;3&#39;</span><span class="p">]</span>
+<span class="n">exodus</span> <span class="o">=</span> <span class="p">[</span><span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">exodus</span> <span class="k">if</span> <span class="n">j</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">remove_list</span><span class="p">]</span>
+<span class="n">exodus</span><span class="p">[:</span><span class="mi">50</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[28]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;thou&#39;,
+ &#39;shalt&#39;,
+ &#39;make&#39;,
+ &#39;altar&#39;,
+ &#39;burn&#39;,
+ &#39;incense&#39;,
+ &#39;upon&#39;,
+ &#39;acacia&#39;,
+ &#39;wood&#39;,
+ &#39;shalt&#39;,
+ &#39;thou&#39;,
+ &#39;make&#39;,
+ &#39;cubit&#39;,
+ &#39;shall&#39;,
+ &#39;length&#39;,
+ &#39;thereof&#39;,
+ &#39;cubit&#39;,
+ &#39;breadth&#39;,
+ &#39;thereof&#39;,
+ &#39;foursquare&#39;,
+ &#39;shall&#39;,
+ &#39;two&#39;,
+ &#39;cubits&#39;,
+ &#39;shall&#39;,
+ &#39;height&#39;,
+ &#39;thereof&#39;,
+ &#39;horns&#39;,
+ &#39;thereof&#39;,
+ &#39;shall&#39;,
+ &#39;one&#39;,
+ &#39;piece&#39;,
+ &#39;thou&#39;,
+ &#39;shalt&#39;,
+ &#39;overlay&#39;,
+ &#39;pure&#39;,
+ &#39;gold&#39;,
+ &#39;top&#39;,
+ &#39;thereof&#39;,
+ &#39;sides&#39;,
+ &#39;thereof&#39;,
+ &#39;round&#39;,
+ &#39;horns&#39;,
+ &#39;thereof&#39;,
+ &#39;thou&#39;,
+ &#39;shalt&#39;,
+ &#39;make&#39;,
+ &#39;unto&#39;,
+ &#39;crown&#39;,
+ &#39;gold&#39;,
+ &#39;round&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&#160;[26]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">new_exodus</span> <span class="o">=</span><span class="p">{}</span>
+<span class="k">for</span> <span class="n">new_word</span> <span class="ow">in</span> <span class="n">exodus</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">new_word</span> <span class="ow">in</span> <span class="n">new_exodus</span><span class="p">:</span>
+        <span class="n">new_exodus</span><span class="p">[</span><span class="n">new_word</span><span class="p">]</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">new_exodus</span><span class="p">[</span><span class="n">new_word</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&#160;[27]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">sorted_new_exodus</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">new_exodus</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">reverse</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">npopular</span> <span class="o">=</span> <span class="mi">25</span>
+<span class="n">x</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">npopular</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npopular</span><span class="p">):</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="o">+</span><span class="p">[</span><span class="n">sorted_new_exodus</span><span class="p">[</span><span class="n">pair</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="k">print</span> <span class="n">sorted_new_exodus</span><span class="p">[</span><span class="n">pair</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>(&#39;shall&#39;, 34)
+(&#39;thou&#39;, 24)
+(&#39;shalt&#39;, 21)
+(&#39;unto&#39;, 19)
+(&#39;thereof&#39;, 17)
+(&#39;make&#39;, 17)
+(&#39;jehovah&#39;, 13)
+(&#39;holy&#39;, 11)
+(&#39;offering&#39;, 9)
+(&#39;incense&#39;, 7)
+(&#39;atonement&#39;, 6)
+(&#39;shekel&#39;, 6)
+(&#39;two&#39;, 6)
+(&#39;give&#39;, 6)
+(&#39;upon&#39;, 6)
+(&#39;aaron&#39;, 5)
+(&#39;thee&#39;, 5)
+(&#39;tent&#39;, 5)
+(&#39;burn&#39;, 5)
+(&#39;sweet&#39;, 5)
+(&#39;meeting&#39;, 5)
+(&#39;altar&#39;, 5)
+(&#39;saying&#39;, 4)
+(&#39;children&#39;, 4)
+(&#39;moses&#39;, 4)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    </div>
+  </div>
+
+
+ 
+
+
+
+<script type="text/javascript" src="/d2l/common/math/MathML.js?v=20.22.3.35896 "></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() { D2LMathML.DesktopInit('https://s.brightspace.com/lib/mathjax/2.7.4/MathJax.js?config=MML_HTMLorMML','https://s.brightspace.com/lib/mathjax/2.7.4/MathJax.js?config=TeX-AMS-MML_HTMLorMML','130',false); });</script></body></html>

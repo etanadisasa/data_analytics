@@ -1,0 +1,56 @@
+---
+title: "Linear Programming Exercise"
+author: "Etana Disasa"
+date: "12/17/2018"
+output: html_document
+---
+## Linear Programming in R using Ipsolve
+###Problem 1
+#####Using a linear problem from a math class the scenario is: “A farmer has 10 acres to plant in wheat and rye. He has to plant at least 7 acres. However, he has only $1200 to spend and each acre of wheat costs $200 to plant and each acre of rye costs $100 to plant. Moreover, the farmer has to get the planting done in 12 hours and it takes an hour to plant an acre of wheat and 2 hours to plant an acre of rye. If the profit is $500 per acre of wheat and $300 per acre of rye how many acres of each should be planted to maximize profits?” (Wilson)
+
+###Solution 1
+```{r}
+library(lpSolveAPI)
+lprec <- make.lp(0,2) #Two crop types; two variable to work with.
+lp.control(lprec, sense="max") #The optimization problem is profit maximizing.
+```
+####To solve this problem, if wheat is denoted by x, and rye with y, then:
+####1. 200x + 100y <= 1200
+####2. x + 2y <= 12
+####3. x + y <= 10
+####4. 1(500x) + 2(300y) = g; which is the optimizing function
+```{r}
+set.objfn(lprec, c(1*500, 2*300)) 
+add.constraint(lprec, c(200, 100), "<=", 1200)
+add.constraint(lprec, c(1, 2), "<=", 12)
+add.constraint(lprec, c(1, 1), "<=", 10)
+lprec
+solve(lprec)
+get.objective(lprec)
+get.variables(lprec)
+```
+#### The result shows that the farmer should plan (`r get.variables(lprec)`) acres of wheat and rye consecutively. With this optimization, he/she will be able to make a total of $`r get.objective(lprec)` in profit.  
+###Problem 2
+####Using a linear problem from a math class the scenario is: “A gold processor has two sources of gold ore, source A and source B. In order to keep his plant running, at least three tons of ore must be processed each day. Ore from source A costs $20 per ton to process, and ore from source B costs $10 per ton to process. Costs must be kept to less than $80 per day. Moreover, Federal Regulations require that the amount of ore from source B cannot exceed twice the amount of ore from source A. If ore from source A yields 2 oz. of gold per ton, and ore from source B yields 3 oz. of gold per ton, *how many tons of ore from both sources must be processed each day to maximize the amount of gold extracted subject to the above constraints?”* (Wilson)
+###Solution 2
+```{r}
+lprec <- make.lp(0,2) # We have here 2 sources; therefore, 2 variable. 
+lp.control(lprec, sense="max") # The optimization problem is production maximizing. 
+```
+####Suppose source A is denoted by x, and source B with y, then:
+####1. 20x + 10y <= 80
+####2. 2x >= y which is equvalent to *2x - y >= 0*
+####4. 2x + 3y = g; which is the optimizing function
+```{r}
+set.objfn(lprec, c(2,3))
+add.constraint(lprec, c(20,10), "<=", 80)
+add.constraint(lprec, c(2,-1), ">=", 0)
+lprec
+```
+
+```{r}
+solve(lprec)
+get.objective(lprec)
+get.variables(lprec)
+```
+#### In other words, the amount of ore we need to process from Source A and Source B is `r get.variables(lprec)` tones respectively. With this production, we will be able to produce a total of `r get.objective(lprec)`oz. of gold. 

@@ -1,0 +1,126 @@
+---
+title: "MSDS Assignemnt Two"
+author: "Etana Disasa"
+date: "11/02/2018"
+output: pdf_document
+---
+
+##ANOVA
+Analysis of Variance (ANOVA) is a systematic approach to test the hypothesis that the means of two or more variables/population equal. It compares the variable means at different factor levels. The null hypothesis claims that all population means (factor level means) are equal while the alternative hypothesis states that at least one is different.
+
+##What does an Analysis of Variance tell you? What types of questions does it answer?
+Annova uses variance to determine if means are different in a particular variables of a dataset. It runs these tests on fixed factor variables that are observed in the data. It attepts to answer if the mean of certain variables (columns) in the data set are different.  
+
+
+```{r get_data, results="hide", message=FALSE}
+
+library(ggplot2)
+library(data.table)
+library(e1071)
+library(stringr)
+library(dplyr)
+library(ggpubr)
+library(BSDA)
+```
+
+## ANOVA (ONE-WAY) #1
+```{r one_way_anova_one}
+eco.dt <- read.csv("ECN_FULL_US_55A1_with_ann.csv")
+
+eco.dt$YEAR = factor(eco.dt$YEAR, labels = c("2007", "2012"))
+
+
+require(ggplot2)
+
+ggplot(eco.dt, aes(x = YEAR, y = PAYANN)) +
+  geom_boxplot(fill = "grey80", colour = "blue") +
+  scale_x_discrete() + xlab("YEAR") +
+  ylab("PAYMENT AMOUNT $1000s")
+
+eco.mod1 = lm(PAYANN ~ YEAR, data = eco.dt)
+
+summary(eco.mod1)
+
+anova(eco.mod1)
+
+confint(eco.mod1)
+
+eco.mod = data.frame(Fitted = fitted(eco.mod1),
+                     Residuals = resid(eco.mod1), Treatment = eco.dt$YEAR)
+ggplot(eco.mod, aes(Fitted, Residuals, colour = Treatment)) + geom_point()
+
+```
+This analysis shows that the tested variable (PAYANN) does not show any significant difference between YEAR 2007 and 2012. 
+
+## AVNOVA (ONE-WAY) #2
+```{r one_way_anova_two}
+eco.dt <- read.csv("ECN_2012_US_55A1/ECN_2012_US_55A1_with_ann.csv")
+
+eco.dt$SECTORID = factor(eco.dt$SECTORID, 
+                         labels = c("55", 
+                                    "551", 
+                                    "5511",
+                                    "55111",
+                                    "551111",
+                                    "551112",
+                                    "551114"))
+
+
+require(ggplot2)
+
+ggplot(eco.dt, aes(x = SECTORID, y = ESTAB)) +
+  geom_boxplot(fill = "grey80", colour = "blue") +
+  scale_x_discrete() + xlab("Sector Types") +
+  ylab("Payment Amounts in $1000s")
+
+eco.mod1 = lm(ESTAB ~ SECTORID, data = eco.dt)
+
+summary(eco.mod1)
+
+anova(eco.mod1)
+
+confint(eco.mod1)
+
+eco.mod = data.frame(Fitted = fitted(eco.mod1),
+                     Residuals = resid(eco.mod1), Treatment = eco.dt$SECTORID)
+ggplot(eco.mod, aes(Fitted, Residuals, colour = Treatment)) + geom_point()
+
+
+```
+In this analysis, the number of establishments(ESTAB) in differernt sector types (SECTORID) have displayed variance in their means. Furthermore, the P-Value is <0.05. Furthermore, the plot displays that sectors identified by SECTORID 551111 and 551112 display signficantly lower mean. 
+
+
+## ANOVA (TWO-WAY)
+```{r two_way_anova}
+eco.dt <- read.csv("ECN_FULL_US_55A1_with_ann.csv")
+
+eco.dt$YEAR = factor(eco.dt$YEAR, 
+                         labels = c("2007","2012"))
+
+
+require(ggplot2)
+
+ggplot(eco.dt, aes(ESTAB, PAYANN, color = YEAR)) +
+  geom_point()
+
+eco.mod1 = aov(ESTAB ~ PAYANN*YEAR, data=eco.dt)
+summary(eco.mod1)
+
+eco.res = eco.dt
+eco.res$M1.Fit = fitted(eco.mod1)
+eco.res$M1.Resid = resid(eco.mod1)
+
+ggplot(eco.res, aes(M1.Fit, M1.Resid, colour = YEAR)) + geom_point() +
+  xlab("Fitted Values") + ylab("Residuals")
+
+ggplot(eco.res, aes(M1.Fit, M1.Resid, colour = YEAR)) + geom_point() +
+  xlab("Fitted Values") + ylab("Residuals") + facet_wrap( ~ SECTORID)
+
+ggplot(eco.res, aes(M1.Fit, M1.Resid, colour = YEAR)) + geom_point() +
+  xlab("Fitted Values") + ylab("Residuals") + facet_wrap( ~ YEAR)
+
+ggplot(eco.res, aes(sample = M1.Resid)) + stat_qq()
+```
+
+
+
